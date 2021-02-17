@@ -643,13 +643,13 @@ class TestState(State):
 		for w in winds:
 			self.mahjong.set_riichi(w)
 
-		for x in xrange(7):
+		for x in range(7):
 			self.mahjong.table.new_other_hand_tile(1, x)
 			self.mahjong.table.new_other_hand_tile(2, x)
 			self.mahjong.table.new_other_hand_tile(3, x)
 
 
-		for x in xrange(4):
+		for x in range(4):
 			self.mahjong.table.add_open_set(x, [ "DR", "DR", "DR", "C4" ], 3)
 			self.mahjong.table.add_open_set(x, [ "C1", "C2", "C3", "C4" ], 3)
 			self.mahjong.table.add_open_set(x, [ "B7", "B8", "B9", "C4" ], 3)
