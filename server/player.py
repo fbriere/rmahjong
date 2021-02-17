@@ -432,7 +432,7 @@ bot_names = (name for name in [ "Panda", "Saki", "Yogi" ])
 class BotPlayer(Player):
 
 	def __init__(self, server):
-		Player.__init__(self, server, bot_names.next())
+		Player.__init__(self, server, next(bot_names))
 		self.engine = BotEngine()
 		self.action = None
 
