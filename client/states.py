@@ -169,8 +169,8 @@ class StartServerState(OfflineState):
 			process = subprocess.Popen([ self.get_server_filename(), str(self.number_of_players) ], bufsize = 0, stdout = subprocess.PIPE)
 			process_out = process.stdout
 			# TODO: Nonblocking server start
-			response = process_out.readline()
-			if response != "Init done\n":
+			response = process_out.readline().decode().rstrip()
+			if response != "Init done":
 				self.show_error("Initialization of server failed")
 				logging.error("Server response: " + response)
 				process.terminate()
