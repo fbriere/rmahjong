@@ -25,7 +25,7 @@ from botengine import BotEngine
 
 
 def tiles(strs):
-	return map(Tile, strs)
+	return [ Tile(x) for x in strs ]
 
 
 def chi(tile_name):

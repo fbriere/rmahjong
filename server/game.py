@@ -259,7 +259,7 @@ class DebugRound(Round):
 	
 	def __init__(self, players, random, round_wind, round_number, prev_riichi_bets):
 		def tiles(strs):
-			return map(Tile, strs)
+			return [ Tile(x) for x in strs ]
 
 		hands = [
 			[ "P9", "P9", "P9", "C7", "C8", "C9", "B1", "B1", "WN", "WN", "P1", "P1", "P1" ],
@@ -282,7 +282,7 @@ class DebugRound(Round):
 
 		r = [ "C4", "P1", "WN", "WN", "WN", "WN", "C9", "P1","DW","DW","DW" ]
 	
-		self.hands = map(tiles, hands) 
+		self.hands = [ tiles(x) for x in hands ]
 		self.rnd = tiles(r)
 		Round.__init__(self, players, random, round_wind, round_number, prev_riichi_bets)
 
