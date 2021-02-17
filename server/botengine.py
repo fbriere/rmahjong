@@ -37,7 +37,7 @@ class BotEngineThread(Thread):
 
 	def run(self):
 		while not self.thread_quit:
-			line = self.process_out.readline()
+			line = self.process_out.readline().decode()
 			self.queue.put(line, True)
 
 class BotEngine():
@@ -150,7 +150,7 @@ class BotEngine():
 		self._write_sets(sets)
 
 	def _write(self, string):
-		self.process_in.write(string)
+		self.process_in.write(string.encode())
 
 	def _set_tiles(self, tiles):
 		message = " ".join((tile.name for tile in tiles))

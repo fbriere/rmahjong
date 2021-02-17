@@ -17,7 +17,6 @@
 
 import socket
 import select
-import string
 
 class ConnectionClosed(Exception):
 	pass
@@ -60,8 +59,8 @@ class Connection:
 				buf = []
 				while True:
 					char = self.socket.recv(1)
-					if char == '\n':
-						return string.join(buf,'')
+					if char == b'\n':
+						return b''.join(buf).decode()
 					if char == '':
 						raise ConnectionClosed()
 					buf.append(char)
@@ -70,7 +69,7 @@ class Connection:
 
 	def send(self, string):
 		try:
-			self.socket.send(string)
+			self.socket.send(string.encode())
 		except socket.error as e:
 			raise ConnectionClosed()	
 
