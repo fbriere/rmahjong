@@ -17,7 +17,7 @@
 
 from subprocess import PIPE, Popen
 from threading import Thread, Lock
-from Queue import Queue
+from six.moves import queue
 from tile import Tile, Pon, Chi
 
 BOT_PATH = "../bot/bot"
@@ -43,7 +43,7 @@ class BotEngineThread(Thread):
 class BotEngine():
 
 	def __init__(self):
-		self.queue = Queue(3)
+		self.queue = queue.Queue(3)
 		self.process = Popen([ BOT_PATH ], bufsize = 0, stdin = PIPE, stdout = PIPE)
 		self.nonblocking = True
 		self.process_out = self.process.stdout
