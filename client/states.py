@@ -177,7 +177,7 @@ class StartServerState(OfflineState):
 			else:
 				self.mahjong.set_server_process(process)
 				self.mahjong.set_state(ConnectingState(self.mahjong, "localhost"))
-		except OSError, e:
+		except OSError as e:
 			self.show_error("Server: " + str(e))
 			if process:
 				process.terminate()

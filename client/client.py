@@ -318,7 +318,7 @@ def main_init(config):
 	config.preinit()
 	try:
 		config.video_init()
-	except pygame.error, e:
+	except pygame.error as e:
 		print "!! Display init failed: " + str(e)
 		print "!! Openning fallback display without GL_MULTISAMPLEBUFFERS"
 		config.disable_multisamples()

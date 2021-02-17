@@ -65,13 +65,13 @@ class Connection:
 					if char == '':
 						raise ConnectionClosed()
 					buf.append(char)
-		except socket.error,e:
+		except socket.error as e:
 			raise ConnectionClosed()
 
 	def send(self, string):
 		try:
 			self.socket.send(string)
-		except socket.error,e:
+		except socket.error as e:
 			raise ConnectionClosed()	
 
 	def get_peer_name(self):

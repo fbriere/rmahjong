@@ -227,7 +227,7 @@ class NetworkPlayer(Player):
 			while message:
 				self.process_message(message)
 				message = self.connection.read_message()
-		except ConnectionClosed, e:
+		except ConnectionClosed as e:
 			self.server.player_leaved(self)
 
 	def tick(self):
