@@ -21,6 +21,7 @@ from tile import Pon, Chi
 from tile import red_dragon, white_dragon, green_dragon, dragons
 from tile import bamboos, chars, pins, all_tiles, honors
 from copy import copy
+import functools
 
 def is_hand_open(sets):
 	for set in sets:
@@ -306,7 +307,7 @@ def eval_sets(pair, sets, round_wind, player_wind, last_tile, wintype):
 
 
 def sum_over_sets(sets, fn):
-	return reduce(lambda a, s: fn(s) + a, sets, 0)
+	return functools.reduce(lambda a, s: fn(s) + a, sets, 0)
 
 def for_all_tiles_in_sets(sets, fn):
 	return for_all_sets(sets, lambda s: s.all_tiles(fn))
