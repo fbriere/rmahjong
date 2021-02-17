@@ -169,7 +169,7 @@ class Mahjong:
 
 	def player_id_by_wind(self, wind):
 		my_id = winds.index(self.my_wind)
-		for i in xrange(4):
+		for i in range(4):
 			if winds[(my_id + i) % 4] == wind:
 				return i
 		raise Exception("Unknown player: " + wind)
@@ -215,7 +215,7 @@ class Mahjong:
 		names = [ self.get_username(), message["right"], message["across"], message["left"] ]
 		scores = [ message["my_score"], message["right_score"], message["across_score"], message["left_score"] ]
 		wid = winds.index(self.my_wind)
-		player_winds = [ self.wind_names[ (wid + t) % 4 ] for t in xrange(4) ]
+		player_winds = [ self.wind_names[ (wid + t) % 4 ] for t in range(4) ]
 		self.init_player_boxes(names, player_winds, scores)
 		self.table.set_new_hand(message["hand"].split())
 		self.add_dora_indicator(message["dora_indicator"])
