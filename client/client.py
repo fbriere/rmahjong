@@ -16,6 +16,7 @@
 
 
 from __future__ import division
+from __future__ import print_function
 
 import pygame
 import logging
@@ -133,7 +134,7 @@ class Mahjong:
 				frames += 1
 				t = pygame.time.get_ticks()
 				if (t - time) >= 1000:
-					print "FPS:",float(frames) / (t - time) * 1000
+					print("FPS:",float(frames) / (t - time) * 1000)
 					time = t
 					frames = 0
 
@@ -193,7 +194,7 @@ class Mahjong:
 		return "0.4"
 
 	def process_network_message(self, message):
-		print "Unknown message (%s): %s" % (self.state.__class__.__name__, repr(message))
+		print("Unknown message (%s): %s" % (self.state.__class__.__name__, repr(message)))
 
 	def arrange_hand(self):
 		self.table.arrange_hand()
@@ -321,8 +322,8 @@ def main_init(config):
 	try:
 		config.video_init()
 	except pygame.error as e:
-		print "!! Display init failed: " + str(e)
-		print "!! Openning fallback display without GL_MULTISAMPLEBUFFERS"
+		print("!! Display init failed: " + str(e))
+		print("!! Openning fallback display without GL_MULTISAMPLEBUFFERS")
 		config.disable_multisamples()
 		config.video_init()
 	init_fonts()
