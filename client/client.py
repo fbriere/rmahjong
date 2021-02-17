@@ -21,6 +21,7 @@ from __future__ import print_function
 import pygame
 import logging
 import gettext
+import six
 
 from graphics import init_fonts, init_opengl, enable2d, disable2d
 from table import Table, winds
@@ -314,7 +315,10 @@ class Config:
 
 
 def main_init(config):
-	gettext.install('rmahjong', './data/locale', unicode=1)
+	if six.PY2:
+		gettext.install('rmahjong', './data/locale', unicode=1)
+	else:
+		gettext.install('rmahjong', './data/locale')
 	logging.basicConfig(filename = "client.log", format = "%(asctime)s - %(levelname)s - %(message)s", level = logging.DEBUG)
 	pygame.display.init()
 	pygame.font.init()
