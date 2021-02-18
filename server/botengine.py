@@ -18,6 +18,8 @@
 from subprocess import PIPE, Popen
 from threading import Thread, Lock
 from six.moves import queue
+import six
+
 from tile import Tile, Pon, Chi
 
 BOT_PATH = "../bot/bot"
@@ -53,6 +55,9 @@ class BotEngine():
 
 	def shutdown(self):
 		self.thread.thread_quit = True
+		if six.PY3:
+			self.process.stdin.close()
+			self.process.stdout.close()
 		self.process.terminate()
 		self.process.wait()
 		#self._write("QUIT\n")
