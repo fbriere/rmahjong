@@ -383,6 +383,7 @@ def score_itsu(pair_tile, sets):
 			return 2
 		else:
 			return 1
+	return 0
 
 def score_chanta(pair_tile, sets):
 	if pair_tile.is_nonterminal() or not for_any_sets(sets, lambda s: s.is_chi()):
