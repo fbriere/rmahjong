@@ -317,7 +317,7 @@ class NetworkPlayer(Player):
 
 
 		s = "Unknown message " + str(message) + " from player: " + self.name
-		print (s)
+		print(s)
 		logging.error(s)
 
 	def own_kan_played_by_me(self, kan, new_tile, dora_indicator):

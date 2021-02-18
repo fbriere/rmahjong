@@ -89,7 +89,7 @@ class Server:
 		self.state.player_try_steal_tile(player, action, opened_set)
 
 if len(sys.argv) == 1:
-	print ("Usage:", sys.argv[0], "<number_of_players>")
+	print("Usage:", sys.argv[0], "<number_of_players>")
 else:
 	logging.basicConfig(filename = "server.log", format = "%(asctime)s - %(levelname)s - %(message)s", level = logging.DEBUG)
 	server = Server(4500, int(sys.argv[1]))
