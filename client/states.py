@@ -174,6 +174,7 @@ class StartServerState(OfflineState):
 				self.show_error("Initialization of server failed")
 				logging.error("Server response: " + response)
 				process.terminate()
+				process.wait()
 			else:
 				self.mahjong.set_server_process(process)
 				self.mahjong.set_state(ConnectingState(self.mahjong, "localhost"))
@@ -181,6 +182,7 @@ class StartServerState(OfflineState):
 			self.show_error("Server: " + str(e))
 			if process:
 				process.terminate()
+				process.wait()
 
 	def get_server_filename(self):
 		for f in [ "../server/run_server.sh", "../server/server.exe" ]:

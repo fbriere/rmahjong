@@ -54,6 +54,7 @@ class BotEngine():
 	def shutdown(self):
 		self.thread.thread_quit = True
 		self.process.terminate()
+		self.process.wait()
 		#self._write("QUIT\n")
 		#self.join()
 
