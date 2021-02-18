@@ -250,6 +250,7 @@ class Mahjong:
 		self.reset_all()
 		if self.server_process:
 			self.server_process.terminate()
+			self.server_process.wait()
 			self.server_process = None
 		mahjong.set_state(MainMenuState(self))
 
@@ -260,6 +261,7 @@ class Mahjong:
 	def on_quit(self):
 		if self.server_process:
 			self.server_process.terminate()
+			self.server_process.wait()
 
 multisamples = True
 
