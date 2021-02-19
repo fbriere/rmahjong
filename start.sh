@@ -1,3 +1,3 @@
 #!/bin/sh
-cd `dirname client/$0`
+cd `dirname $0`/client
 exec python client.py
