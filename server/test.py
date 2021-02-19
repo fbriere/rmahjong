@@ -17,6 +17,7 @@
 
 import unittest
 from unittest import TestCase
+import itertools
 
 from tile import Tile, Chi, Pon, Kan, all_tiles
 from eval import count_of_tiles_yaku, compute_payment, hand_in_tenpai, compute_score, find_tiles_yaku, riichi_test
@@ -50,6 +51,62 @@ def ckan(tile_name):
 	kan.closed = True
 	return kan
 
+
+scoring_table_non_dealer = [
+	# fu        1 han               2 han               3 han               4 han
+	# --        -----               -----               -----               -----
+	( 20,       None,        ( 400,  700, None), ( 700, 1300, None), (1300, 2600, None)),
+	( 25,       None,        (None, None, 1600), ( 800, 1600, 3200), (1600, 3200, 6400)),
+	( 30, (300,  500, 1000), ( 500, 1000, 2000), (1000, 2000, 3900), (2000, 3900, 7700)),
+	( 40, (400,  700, 1300), ( 700, 1300, 2600), (1300, 2600, 5200)),
+	( 50, (400,  800, 1600), ( 800, 1600, 3200), (1600, 3200, 6400)),
+	( 60, (500, 1000, 2000), (1000, 2000, 3900), (2000, 3900, 7700)),
+	( 70, (600, 1200, 2300), (1200, 2300, 4500)),
+	( 80, (700, 1300, 2600), (1300, 2600, 5200)),
+	( 90, (800, 1500, 2900), (1500, 2900, 5800)),
+	(100, (800, 1600, 3200), (1600, 3200, 6400)),
+	(110, (900, 1800, 3600), (1800, 3600, 7100)),
+	# Make sure we correctly support 3-4 han / 120+ fu
+	(120,       None,               None,      ),
+	(130,       None,               None,      ),
+	(140,       None,               None,      ),
+	(150,       None,               None,      ),
+	(160,       None,               None,      ),
+	(170,       None,               None,      ),
+]
+
+scoring_table_dealer = [
+	# fu      1 han         2 han          3 han          4 han
+	# --      -----         -----          -----          -----
+	( 20,     None,     ( 700,  None), (1300,  None), (2600,  None)),
+	( 25,     None,     (None,  2400), (1600,  4800), (3200,  9600)),
+	( 30, ( 500, 1500), (1000,  2900), (2000,  5800), (3900, 11600)),
+	( 40, ( 700, 2000), (1300,  3900), (2600,  7700)),
+	( 50, ( 800, 2400), (1600,  4800), (3200,  9600)),
+	( 60, (1000, 2900), (2000,  5800), (3900, 11600)),
+	( 70, (1200, 3400), (2300,  6800)),
+	( 80, (1300, 3900), (2600,  7700)),
+	( 90, (1500, 4400), (2900,  8700)),
+	(100, (1600, 4800), (3200,  9600)),
+	(110, (1800, 5300), (3600, 10600)),
+	# Make sure we correctly support 3-4 han / 120+ fu
+	(120,     None,         None,    ),
+	(130,     None,         None,    ),
+	(140,     None,         None,    ),
+	(150,     None,         None,    ),
+	(160,     None,         None,    ),
+	(170,     None,         None,    ),
+]
+
+scoring_limits = [
+	#   han       Name             Non-dealer          Dealer
+	#   ---       ----             ----------          ------
+	(( 5,    ), "Mangan",    (2000,  4000,  8000), ( 4000, 12000)),
+	(( 6,7   ), "Haneman",   (3000,  6000, 12000), ( 6000, 18000)),
+	(( 8,9,10), "Baiman",    (4000,  8000, 16000), ( 8000, 24000)),
+	((11,12  ), "Sanbaiman", (6000, 12000, 24000), (12000, 36000)),
+	((13,    ), "Yakuman",   (8000, 16000, 32000), (16000, 48000)),
+]
 
 test_hands = [
 	([ "WW", "C4", "C4", "C4", "C4", "C2", "C3", "DR", "B9", "DR", "B8", "B7", "DR", "WW" ], [], 1), #0, Yaku-Pai
@@ -177,31 +234,51 @@ class EvalHandTestCase(TestCase):
 		self.assertEquals(count_of_tiles_yaku(tiles(hand), sets, [], Tile("WE"), Tile("WW"), "Tsumo"), 1)
 
 	def test_basic_payment(self):
-		self.assert_(compute_payment(2, 40, "Ron", Tile("WN")) == ("", 2600))
-		self.assert_(compute_payment(2, 40, "Ron", Tile("WE")) == ("", 3900))
-		self.assertEquals(compute_payment(2, 40, "Tsumo", Tile("WN")), ("", (700,1300)))
-		self.assertEquals(compute_payment(2, 40, "Tsumo", Tile("WE")), ("", (1300, 0)))
+		# Test tsumo and ron payments for a single han/fu/is_dealer combination
+		def test_payment_pair(han, fu, is_dealer, limit_name, tsumo, tsumo_dealer, ron):
+			player_wind = Tile("WE" if is_dealer else "WN")
+			if tsumo:
+				self.assertEqual(compute_payment(han, fu, "Tsumo", player_wind), (limit_name, (tsumo, tsumo_dealer)))
+			if ron:
+				self.assertEqual(compute_payment(han, fu, "Ron", player_wind), (limit_name, ron))
 
-		self.assert_(compute_payment(1, 40, "Ron", Tile("WN")) == ("", 1300))
-		self.assert_(compute_payment(1, 40, "Ron", Tile("WE")) == ("", 2000))
-		self.assertEquals(compute_payment(1, 40, "Tsumo", Tile("WN")), ("", (400, 700)))
-		self.assertEquals(compute_payment(1, 40, "Tsumo", Tile("WE")), ("", (700, 0)))
+		# Merge both tables into a single list, with `is_dealer` as first element of each entry
+		scoring_table_whole = \
+				[(False,)+x for x in scoring_table_non_dealer] + \
+				[(True,)+x for x in scoring_table_dealer]
+		for column_data in scoring_table_whole:
+			# Each entry corresponds to a single fu column in one table
+			(is_dealer, fu), rows = column_data[:2], column_data[2:]
+			for han in range(1, 4+1):
+				if han > len(rows):
+					# Mangan
+					_, limit_name, mangan_non_dealer, mangan_dealer = scoring_limits[0]
+					scores = mangan_dealer if is_dealer else mangan_non_dealer
+				else:
+					limit_name = ""
+					scores = rows[han - 1]
+					if not scores:
+						# Impossible combination, namely 1 han and <30 fu
+						continue
+				# Unpack `scores`
+				if is_dealer:
+					tsumo, ron = scores
+					tsumo_dealer = 0
+				else:
+					tsumo, tsumo_dealer, ron = scores
+				test_payment_pair(han, fu, is_dealer, limit_name, tsumo, tsumo_dealer, ron)
 
-		self.assertEquals(compute_payment(4, 20, "Tsumo", Tile("WN")), ("", (1300, 2600)))
-		self.assertEquals(compute_payment(4, 20, "Tsumo", Tile("WE")), ("", (2600, 0)))
-
-		self.assertEquals(compute_payment(3, 20, "Tsumo", Tile("WN")), ("", (700, 1300)))
-		self.assertEquals(compute_payment(3, 20, "Tsumo", Tile("WE")), ("", (1300, 0)))
-
-		self.assertEquals(compute_payment(5, 40, "Ron", Tile("WN")), ("Mangan", 8000))
-		self.assertEquals(compute_payment(5, 40, "Ron", Tile("WE")), ("Mangan", 12000))
-		self.assertEquals(compute_payment(5, 40, "Tsumo", Tile("WN")), ("Mangan", (2000, 4000)))
-		self.assertEquals(compute_payment(5, 40, "Tsumo", Tile("WE")), ("Mangan", (4000, 0)))
-
-		self.assertEquals(compute_payment(13, 40, "Ron", Tile("WN")), ("Yakuman", 32000))
-		self.assertEquals(compute_payment(13, 40, "Ron", Tile("WE")), ("Yakuman", 48000))
-		self.assertEquals(compute_payment(13, 40, "Tsumo", Tile("WN")), ("Yakuman", (8000, 16000)))
-		self.assertEquals(compute_payment(13, 40, "Tsumo", Tile("WE")), ("Yakuman", (16000, 0)))
+		for limit in scoring_limits:
+			han_values, name, non_dealer, dealer = limit
+			for han in han_values:
+				# Iterate over all possible fu values, just to be safe
+				for fu in itertools.chain(range(20, 170+10, 10), (25,)):
+					# Test the non-dealer scores
+					tsumo, tsumo_dealer, ron = non_dealer
+					test_payment_pair(han, fu, False, name, tsumo, tsumo_dealer, ron)
+					# Test the dealer scores
+					tsumo, ron = dealer
+					test_payment_pair(han, fu, True, name, tsumo, 0, ron)
 
 	def test_tenpai(self):
 		hands = (([ "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "P1", "P1", "P1", "WN"], [], True, ["WN"]),
