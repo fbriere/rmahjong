@@ -17,7 +17,7 @@
 
 from subprocess import PIPE, Popen
 from threading import Thread, Lock
-import queue
+from six.moves import queue
 from tile import Tile, Pon, Chi
 
 BOT_PATH = "../bot/bot"
