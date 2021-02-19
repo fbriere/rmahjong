@@ -15,6 +15,8 @@
 # <http://www.gnu.org/licenses/>.
 
 
+from __future__ import division
+
 import pygame
 import logging
 import gettext

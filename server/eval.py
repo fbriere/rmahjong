@@ -14,6 +14,8 @@
 # along with this program; see the file COPYING. If not, see 
 # <http://www.gnu.org/licenses/>.
 
+from __future__ import division
+
 import collections 
 from tile import Pon, Chi
 from tile import red_dragon, white_dragon, green_dragon, dragons

@@ -1,3 +1,5 @@
+from __future__ import division
+
 import graphics
 import pygame
 from copy import copy
