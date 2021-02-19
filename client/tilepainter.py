@@ -15,6 +15,8 @@
 # <http://www.gnu.org/licenses/>.
 
 
+from __future__ import division
+
 from graphics import Texture, RawTexture, DisplayList
 import pygame
 import OpenGL.GL as gl
