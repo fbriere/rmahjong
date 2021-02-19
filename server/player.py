@@ -378,10 +378,10 @@ class NetworkPlayer(Player):
 		msg["payment"] = payment_name
 		msg["wintype"] = win_type
 		msg["player"] = player.wind.name
-		msg["total_fans"] = sum(map(lambda r: r[1], scores))
+		msg["total_fans"] = sum([ r[1] for r in scores ])
 		msg["minipoints"] = minipoints
 		msg["looser_riichi"] = looser_riichi
-		msg["score_items"] = ";".join(map(lambda sc: "%s %s" % (sc[0], sc[1]), scores))
+		msg["score_items"] = ";".join([ "%s %s" % (sc[0], sc[1]) for sc in scores ])
 		msg["ura_dora_indicators"] = " ".join([ tile.name for tile in ura_dora_indicators ])
 		msg["end_of_game"] = end_of_game
 		msg["winner_hand"] = " ".join( [ tile.name for tile in player.hand ] )

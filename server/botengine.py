@@ -74,7 +74,7 @@ class BotEngine():
 
 	def get_tiles(self, blocking = False):
 		if self._is_next_line() or blocking:
-			return [*map(Tile, (self._read_line().strip().split()))]
+			return [ Tile(x) for x in (self._read_line().strip().split()) ]
 		else:
 			return None
 

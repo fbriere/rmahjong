@@ -578,7 +578,7 @@ class ScoreState(RoundPreparingState):
 
 	def final_score(self, button):
 		results = self.get_results()
-		results = map(lambda r: r[:2], results) # Remove payment
+		results = [ r[:2] for r in results ] # Remove payment
 		state = FinalState(self.mahjong, results)
 		self.mahjong.set_state(state)
 

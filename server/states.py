@@ -139,7 +139,7 @@ class StealTileState(GenericGameState):
 			p.player_dropped_tile(self.player, self.droped_tile)
 
 	def is_player_ready(self, player):
-		return player in map(lambda x: x[0], self.ready_players)
+		return player in [ x[0] for x in self.ready_players ]
 
 	def player_is_ready(self, player):
 		if not self.is_player_ready(player):

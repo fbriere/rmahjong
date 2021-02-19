@@ -49,7 +49,7 @@ def find_tiles_yaku(hand, sets, specials, round_wind, player_wind, wintype):
 
 def count_of_tiles_yaku(hand, sets, specials, round_wind, player_wind, wintype):
 	score = find_tiles_yaku(hand, sets, specials, round_wind, player_wind, wintype)
-	return sum(map(lambda r: r[1], score))
+	return sum([ r[1] for r in score ])
 
 
 scoring_table = {
@@ -187,7 +187,7 @@ def compute_score(hand, sets, wintype, doras_and_ura_doras, specials, round_wind
 		minipoints = 25
 	else:
 		minipoints = compute_minipoints(hand, sets, wintype, round_wind, player_wind, last_tile)
-	fans = min(sum(map(lambda r: r[1], yaku)), 13)
+	fans = min(sum([ r[1] for r in yaku ]), 13)
 
 	# TODO: Red-fives
 
