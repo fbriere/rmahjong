@@ -148,8 +148,8 @@ class Button(Widget):
 		surface = self.create_bg_surface()
 		surface.fill((0,0,0,90))
 		textsurface = graphics.font.render(self.label, True, (255,255,255))
-		px = (surface.get_width() - textsurface.get_width()) / 2
-		py = (surface.get_height() - textsurface.get_height()) / 2
+		px = (surface.get_width() - textsurface.get_width()) // 2
+		py = (surface.get_height() - textsurface.get_height()) // 2
 		surface.blit(textsurface, (px, py))
 		return surface
 
@@ -204,7 +204,7 @@ class TextWidget(Widget):
 		textsurface = font.render(text, True, color)
 		w = textsurface.get_width()
 		h = textsurface.get_height()		
-		Widget.__init__(self, (position[0] - w/2 , position[1] - h/2), (w, h))
+		Widget.__init__(self, (position[0] - w//2 , position[1] - h//2), (w, h))
 		self.set_surface(textsurface)
 
 
@@ -235,12 +235,12 @@ class PlayerBox(Widget):
 		else:
 			surface.fill((0,0,0,90))
 		textsurface = graphics.font.render(self.player_name, True, (255,255,255))
-		px = (surface.get_width() - textsurface.get_width()) / 2
-		py = (surface.get_height() - textsurface.get_height()) / 4
+		px = (surface.get_width() - textsurface.get_width()) // 2
+		py = (surface.get_height() - textsurface.get_height()) // 4
 		surface.blit(textsurface, (px, py))
 		textsurface = graphics.font.render(str(self.score), True, (255,255,255))
-		px = (surface.get_width() - textsurface.get_width()) / 2
-		py = (surface.get_height() - textsurface.get_height()) / 4 * 3
+		px = (surface.get_width() - textsurface.get_width()) // 2
+		py = (surface.get_height() - textsurface.get_height()) // 4 * 3
 		surface.blit(textsurface, (px, py))
 
 		textsurface = graphics.font_small.render(self.wind.capitalize(), True, (128,128,128))
@@ -292,7 +292,7 @@ class Table(Widget):
 
 	def text_center(self, text, row_change, color = (255,255,255)):
 		textsurface = graphics.font.render(text, True, color)
-		self.surface.blit(textsurface, ((self.size[0] - textsurface.get_width()) / 2, self.row))
+		self.surface.blit(textsurface, ((self.size[0] - textsurface.get_width()) // 2, self.row))
 		if row_change:
 			self.row += row_change
 
