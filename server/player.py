@@ -412,7 +412,7 @@ class NetworkPlayer(Player):
 				"action" : action,
 				"player" : player.wind.name,
 				"from_player" : from_player.wind.name,
-				"tiles" : " ".join([tile.name for tile in opened_set.tiles()]),
+				"tiles" : " ".join([ tile.name for tile in opened_set.tiles() ]),
 				"stolen_tile" : stolen_tile.name
 		}
 
