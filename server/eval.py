@@ -14,11 +14,14 @@
 # along with this program; see the file COPYING. If not, see 
 # <http://www.gnu.org/licenses/>.
 
+from __future__ import division
+
 import collections 
 from tile import Pon, Chi
 from tile import red_dragon, white_dragon, green_dragon, dragons
 from tile import bamboos, chars, pins, all_tiles, honors
 from copy import copy
+import functools
 
 def is_hand_open(sets):
 	for set in sets:
@@ -48,7 +51,7 @@ def find_tiles_yaku(hand, sets, specials, round_wind, player_wind, wintype):
 
 def count_of_tiles_yaku(hand, sets, specials, round_wind, player_wind, wintype):
 	score = find_tiles_yaku(hand, sets, specials, round_wind, player_wind, wintype)
-	return sum(map(lambda r: r[1], score))
+	return sum([ r[1] for r in score ])
 
 
 scoring_table = {
@@ -96,14 +99,14 @@ def compute_payment(fans, minipoints, wintype, player_wind):
 	
 	if wintype == "Ron":
 		if player_wind.name == "WE":
-			return (name, round_to_base(score / 2 * 3, 100))
+			return (name, round_to_base(score // 2 * 3, 100))
 		else:
 			return (name, score)
 	else:
 		if player_wind.name == "WE":
-			return (name, (round_to_base(score / 2, 100), 0))
+			return (name, (round_to_base(score // 2, 100), 0))
 		else:
-			return (name, (round_to_base(score / 4, 100), round_to_base(score / 2, 100)))
+			return (name, (round_to_base(score // 4, 100), round_to_base(score // 2, 100)))
 
 def quick_pons_and_kans(hand):
 	d = {}
@@ -186,7 +189,7 @@ def compute_score(hand, sets, wintype, doras_and_ura_doras, specials, round_wind
 		minipoints = 25
 	else:
 		minipoints = compute_minipoints(hand, sets, wintype, round_wind, player_wind, last_tile)
-	fans = min(sum(map(lambda r: r[1], yaku)), 13)
+	fans = min(sum([ r[1] for r in yaku ]), 13)
 
 	# TODO: Red-fives
 
@@ -274,7 +277,7 @@ def eval_sets(pair, sets, round_wind, player_wind, last_tile, wintype):
 	# Other hands
 	for name, fn in score_functions:
 		score = fn(pair, sets)
-		if score > 0:
+		if score:
 			result.append((name, score))
 
 	# Pinfu
@@ -304,7 +307,7 @@ def eval_sets(pair, sets, round_wind, player_wind, last_tile, wintype):
 
 
 def sum_over_sets(sets, fn):
-	return reduce(lambda a, s: fn(s) + a, sets, 0)
+	return functools.reduce(lambda a, s: fn(s) + a, sets, 0)
 
 def for_all_tiles_in_sets(sets, fn):
 	return for_all_sets(sets, lambda s: s.all_tiles(fn))
@@ -382,6 +385,7 @@ def score_itsu(pair_tile, sets):
 			return 2
 		else:
 			return 1
+	return 0
 
 def score_chanta(pair_tile, sets):
 	if pair_tile.is_nonterminal() or not for_any_sets(sets, lambda s: s.is_chi()):

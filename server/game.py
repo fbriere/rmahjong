@@ -14,6 +14,8 @@
 # along with this program; see the file COPYING. If not, see 
 # <http://www.gnu.org/licenses/>.
 
+from __future__ import division
+
 import logging
 from copy import copy
 
@@ -118,7 +120,7 @@ class Round:
 		self.active_player = player
 
 	def get_hand(self):
-		return [ self.pick_random_tile() for i in xrange(13) ]
+		return [ self.pick_random_tile() for i in range(13) ]
 
 	def get_remaining_tiles_in_wall(self):
 		""" Returns number of tiles in live wall """
@@ -134,7 +136,7 @@ class Round:
 	def get_remaining_turns_for_player(self, player):
 		players = self.players
 		i = (4 + players.index(player) - players.index(self.active_player) - 1) % 4
-		return (self.get_remaining_tiles_in_wall() - i) / 4
+		return (self.get_remaining_tiles_in_wall() - i) // 4
 
 	def hidden_tiles_for_player(self, player):
 		return player.left_player.hand + player.right_player.hand + player.across_player.hand + self.wall
@@ -213,8 +215,8 @@ class Round:
 		diffs = {}
 
 		if len(winners) != 0 and len(loosers) != 0:
-			l_payment = -3000 / len(loosers)
-			w_payment = 3000 / len(winners)
+			l_payment = -3000 // len(loosers)
+			w_payment = 3000 // len(winners)
 			for player in winners: 
 				diffs[player] = w_payment
 				player.score += w_payment
@@ -257,7 +259,7 @@ class DebugRound(Round):
 	
 	def __init__(self, players, random, round_wind, round_number, prev_riichi_bets):
 		def tiles(strs):
-			return map(Tile, strs)
+			return [ Tile(x) for x in strs ]
 
 		hands = [
 			[ "P9", "P9", "P9", "C7", "C8", "C9", "B1", "B1", "WN", "WN", "P1", "P1", "P1" ],
@@ -280,7 +282,7 @@ class DebugRound(Round):
 
 		r = [ "C4", "P1", "WN", "WN", "WN", "WN", "C9", "P1","DW","DW","DW" ]
 	
-		self.hands = map(tiles, hands) 
+		self.hands = [ tiles(x) for x in hands ]
 		self.rnd = tiles(r)
 		Round.__init__(self, players, random, round_wind, round_number, prev_riichi_bets)
 

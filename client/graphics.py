@@ -15,6 +15,8 @@
 # <http://www.gnu.org/licenses/>.
 
 
+from __future__ import division
+
 import pygame
 from pygame import display, event
 import pygame
@@ -81,8 +83,8 @@ def draw_text(text, position, color):
 	display.get_surface().blit(font.render(text, True, color), position)
 
 def blit_to_center(dest_surface, surface):
-	px = (dest_surface.get_width() - surface.get_width()) / 2
-	py = (dest_surface.get_height() - surface.get_height()) / 2
+	px = (dest_surface.get_width() - surface.get_width()) // 2
+	py = (dest_surface.get_height() - surface.get_height()) // 2
 	dest_surface.blit(surface, (px, py))
 
 def enable2d():

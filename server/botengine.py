@@ -17,7 +17,9 @@
 
 from subprocess import PIPE, Popen
 from threading import Thread, Lock
-from Queue import Queue
+from six.moves import queue
+import six
+
 from tile import Tile, Pon, Chi
 
 BOT_PATH = "../bot/bot"
@@ -37,13 +39,13 @@ class BotEngineThread(Thread):
 
 	def run(self):
 		while not self.thread_quit:
-			line = self.process_out.readline()
+			line = self.process_out.readline().decode()
 			self.queue.put(line, True)
 
 class BotEngine():
 
 	def __init__(self):
-		self.queue = Queue(3)
+		self.queue = queue.Queue(3)
 		self.process = Popen([ BOT_PATH ], bufsize = 0, stdin = PIPE, stdout = PIPE)
 		self.nonblocking = True
 		self.process_out = self.process.stdout
@@ -53,7 +55,11 @@ class BotEngine():
 
 	def shutdown(self):
 		self.thread.thread_quit = True
+		if six.PY3:
+			self.process.stdin.close()
+			self.process.stdout.close()
 		self.process.terminate()
+		self.process.wait()
 		#self._write("QUIT\n")
 		#self.join()
 
@@ -71,7 +77,7 @@ class BotEngine():
 
 	def get_tiles(self, blocking = False):
 		if self._is_next_line() or blocking:
-			return map(Tile, (self._read_line().strip().split()))
+			return [ Tile(x) for x in (self._read_line().strip().split()) ]
 		else:
 			return None
 
@@ -150,7 +156,7 @@ class BotEngine():
 		self._write_sets(sets)
 
 	def _write(self, string):
-		self.process_in.write(string)
+		self.process_in.write(string.encode())
 
 	def _set_tiles(self, tiles):
 		message = " ".join((tile.name for tile in tiles))

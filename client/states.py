@@ -169,18 +169,20 @@ class StartServerState(OfflineState):
 			process = subprocess.Popen([ self.get_server_filename(), str(self.number_of_players) ], bufsize = 0, stdout = subprocess.PIPE)
 			process_out = process.stdout
 			# TODO: Nonblocking server start
-			response = process_out.readline()
-			if response != "Init done\n":
+			response = process_out.readline().decode().rstrip()
+			if response != "Init done":
 				self.show_error("Initialization of server failed")
 				logging.error("Server response: " + response)
 				process.terminate()
+				process.wait()
 			else:
 				self.mahjong.set_server_process(process)
 				self.mahjong.set_state(ConnectingState(self.mahjong, "localhost"))
-		except OSError, e:
+		except OSError as e:
 			self.show_error("Server: " + str(e))
 			if process:
 				process.terminate()
+				process.wait()
 
 	def get_server_filename(self):
 		for f in [ "../server/run_server.sh", "../server/server.exe" ]:
@@ -577,7 +579,7 @@ class ScoreState(RoundPreparingState):
 
 	def final_score(self, button):
 		results = self.get_results()
-		results = map(lambda r: r[:2], results) # Remove payment
+		results = [ r[:2] for r in results ] # Remove payment
 		state = FinalState(self.mahjong, results)
 		self.mahjong.set_state(state)
 
@@ -643,13 +645,13 @@ class TestState(State):
 		for w in winds:
 			self.mahjong.set_riichi(w)
 
-		for x in xrange(7):
+		for x in range(7):
 			self.mahjong.table.new_other_hand_tile(1, x)
 			self.mahjong.table.new_other_hand_tile(2, x)
 			self.mahjong.table.new_other_hand_tile(3, x)
 
 
-		for x in xrange(4):
+		for x in range(4):
 			self.mahjong.table.add_open_set(x, [ "DR", "DR", "DR", "C4" ], 3)
 			self.mahjong.table.add_open_set(x, [ "C1", "C2", "C3", "C4" ], 3)
 			self.mahjong.table.add_open_set(x, [ "B7", "B8", "B9", "C4" ], 3)

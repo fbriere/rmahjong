@@ -14,6 +14,8 @@
 # along with this program; see the file COPYING. If not, see 
 # <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+
 import logging
 from copy import copy
 
@@ -227,7 +229,7 @@ class NetworkPlayer(Player):
 			while message:
 				self.process_message(message)
 				message = self.connection.read_message()
-		except ConnectionClosed, e:
+		except ConnectionClosed as e:
 			self.server.player_leaved(self)
 
 	def tick(self):
@@ -317,7 +319,7 @@ class NetworkPlayer(Player):
 
 
 		s = "Unknown message " + str(message) + " from player: " + self.name
-		print s
+		print(s)
 		logging.error(s)
 
 	def own_kan_played_by_me(self, kan, new_tile, dora_indicator):
@@ -376,10 +378,10 @@ class NetworkPlayer(Player):
 		msg["payment"] = payment_name
 		msg["wintype"] = win_type
 		msg["player"] = player.wind.name
-		msg["total_fans"] = sum(map(lambda r: r[1], scores))
+		msg["total_fans"] = sum([ r[1] for r in scores ])
 		msg["minipoints"] = minipoints
 		msg["looser_riichi"] = looser_riichi
-		msg["score_items"] = ";".join(map(lambda sc: "%s %s" % (sc[0], sc[1]), scores))
+		msg["score_items"] = ";".join([ "%s %s" % (sc[0], sc[1]) for sc in scores ])
 		msg["ura_dora_indicators"] = " ".join([ tile.name for tile in ura_dora_indicators ])
 		msg["end_of_game"] = end_of_game
 		msg["winner_hand"] = " ".join( [ tile.name for tile in player.hand ] )
@@ -410,7 +412,7 @@ class NetworkPlayer(Player):
 				"action" : action,
 				"player" : player.wind.name,
 				"from_player" : from_player.wind.name,
-				"tiles" : " ".join([tile.name for tile in opened_set.tiles()]),
+				"tiles" : " ".join([ tile.name for tile in opened_set.tiles() ]),
 				"stolen_tile" : stolen_tile.name								
 		}
 
@@ -432,7 +434,7 @@ bot_names = (name for name in [ "Panda", "Saki", "Yogi" ])
 class BotPlayer(Player):
 
 	def __init__(self, server):
-		Player.__init__(self, server, bot_names.next())
+		Player.__init__(self, server, next(bot_names))
 		self.engine = BotEngine()
 		self.action = None
 
