@@ -14,6 +14,8 @@
 # along with this program; see the file COPYING. If not, see
 # <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+
 import logging
 from copy import copy
 
