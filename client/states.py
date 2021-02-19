@@ -24,7 +24,6 @@ import subprocess
 import logging
 import os.path
 import pygame
-import sys
 
 
 def split_str(string, sep):

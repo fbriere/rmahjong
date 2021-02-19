@@ -17,7 +17,6 @@
 
 import socket
 import select
-import string
 
 class ConnectionClosed(Exception):
 	pass
