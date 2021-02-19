@@ -54,19 +54,6 @@ def count_of_tiles_yaku(hand, sets, specials, round_wind, player_wind, wintype):
 	return sum([ r[1] for r in score ])
 
 
-scoring_table = {
-	20: [ None, 1400, 2600, 5200 ],
-	25: [ None, 1600, 3200, 6400 ],
-	30: [ 1000, 2000, 3900, 7700 ],
-	40:	[ 1300, 2600, 5200, 8000 ],
-	50: [ 1600, 3200, 6400, 8000 ],
-	60: [ 2000, 3900, 7700, 8000 ],
-	70: [ 2300, 4500, 8000, 8000 ],
-	80: [ 2600, 5200, 8000, 8000 ],
-	90: [ 2900, 5800, 8000, 8000 ],
-	100:[ 3200, 6400, 8000, 8000 ]
-}
-
 limited_hands = {
 	5: ("Mangan", 8000),
     6: ("Haneman", 12000),
@@ -93,7 +80,10 @@ def compute_payment(fans, minipoints, wintype, player_wind):
 		y payment of dealer (if Tsumo)
 	""" 
 	if fans < 5:
-		name, score = "", scoring_table[minipoints][fans - 1]
+		name, score = "", minipoints * (2 ** (2 + fans)) * 4
+		mangan = limited_hands[5]
+		if score >= mangan[1]:
+			name, score = mangan
 	else:
 		name, score = limited_hands[fans]
 	
@@ -101,7 +91,7 @@ def compute_payment(fans, minipoints, wintype, player_wind):
 		if player_wind.name == "WE":
 			return (name, round_to_base(score // 2 * 3, 100))
 		else:
-			return (name, score)
+			return (name, round_to_base(score, 100))
 	else:
 		if player_wind.name == "WE":
 			return (name, (round_to_base(score // 2, 100), 0))
