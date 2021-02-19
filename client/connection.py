@@ -59,9 +59,9 @@ class Connection:
 			if self.is_read_ready():
 				buf = []
 				while True:
-					char = self.socket.recv(1).decode()
-					if char == '\n':
-						return "".join(buf)
+					char = self.socket.recv(1)
+					if char == b'\n':
+						return b''.join(buf).decode()
 					if char == '':
 						raise ConnectionClosed()
 					buf.append(char)
