@@ -236,7 +236,7 @@ class Mahjong:
 	def set_prev_riichi_bets(self, bets):
 		if bets > 0:
 			w1 = TextureWidget((520, 328), self.table.rstick_texture, 0.3, 0.3)
-			w2 = TextWidget((500,330), str(bets / 1000) + "x", (175,175,175))
+			w2 = TextWidget((500,330), str(bets // 1000) + "x", (175,175,175))
 			self.prev_riichi_bets_label = ContainerWidget( [ w1, w2] )
 			self.gui.add_widget(self.prev_riichi_bets_label)
 

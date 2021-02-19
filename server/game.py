@@ -134,7 +134,7 @@ class Round:
 	def get_remaining_turns_for_player(self, player):
 		players = self.players
 		i = (4 + players.index(player) - players.index(self.active_player) - 1) % 4
-		return (self.get_remaining_tiles_in_wall() - i) / 4
+		return (self.get_remaining_tiles_in_wall() - i) // 4
 
 	def hidden_tiles_for_player(self, player):
 		return player.left_player.hand + player.right_player.hand + player.across_player.hand + self.wall
@@ -213,8 +213,8 @@ class Round:
 		diffs = {}
 
 		if len(winners) != 0 and len(loosers) != 0:
-			l_payment = -3000 / len(loosers)
-			w_payment = 3000 / len(winners)
+			l_payment = -3000 // len(loosers)
+			w_payment = 3000 // len(winners)
 			for player in winners: 
 				diffs[player] = w_payment
 				player.score += w_payment

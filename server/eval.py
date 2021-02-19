@@ -96,14 +96,14 @@ def compute_payment(fans, minipoints, wintype, player_wind):
 	
 	if wintype == "Ron":
 		if player_wind.name == "WE":
-			return (name, round_to_base(score / 2 * 3, 100))
+			return (name, round_to_base(score // 2 * 3, 100))
 		else:
 			return (name, score)
 	else:
 		if player_wind.name == "WE":
-			return (name, (round_to_base(score / 2, 100), 0))
+			return (name, (round_to_base(score // 2, 100), 0))
 		else:
-			return (name, (round_to_base(score / 4, 100), round_to_base(score / 2, 100)))
+			return (name, (round_to_base(score // 4, 100), round_to_base(score // 2, 100)))
 
 def quick_pons_and_kans(hand):
 	d = {}
